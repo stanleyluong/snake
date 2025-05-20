@@ -159,4 +159,49 @@ button:disabled {
 .page-header img {
   height: 50px; /* Adjust size as needed */
   width: 50px;  /* Adjust size as needed */
+}
+
+/* Touch Controls Styles */
+.touch-controls-container {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px; /* Smaller gap for touch rows */
+  user-select: none; /* Prevent text selection on rapid taps */
+  -webkit-user-select: none; /* Safari */
+  -ms-user-select: none; /* IE 10+ */
+}
+
+.touch-row {
+  display: flex;
+  justify-content: center;
+  gap: 10px; /* Gap between buttons in a row */
+}
+
+.touch-button {
+  background-color: #4a5a6a; /* Different color for touch buttons */
+  border: 2px solid #61dafb;
+  color: white;
+  padding: 15px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 24px; /* Larger font for better visibility */
+  font-weight: bold;
+  min-width: 60px; /* Minimum width */
+  min-height: 60px; /* Minimum height */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s, transform 0.1s;
+}
+
+.touch-button.wide {
+  min-width: 130px; /* For a wider UP button, spans two conceptual columns */
+}
+
+.touch-button:active {
+  background-color: #61dafb;
+  color: #282c34;
+  transform: scale(0.95);
 } 

@@ -3,6 +3,7 @@ import './App.css';
 import AboutModal from './components/AboutModal.jsx';
 import GameBoard from './components/GameBoard.jsx';
 import GameInfo from './components/GameInfo.jsx';
+import TouchControls from './components/TouchControls.jsx';
 import { checkCollision, generateFood, getInitialSnake } from './utils/gameUtils.js';
 
 const GRID_SIZE = 20;
@@ -63,6 +64,18 @@ function App() {
     });
   }, [direction, food, isPlaying, gameOver]);
 
+  const handleDirectionChange = (newDirection) => {
+    if (!isPlaying) return; // Only change direction if playing
+
+    // Prevent immediate 180-degree turns
+    if (newDirection === 'UP' && direction === 'DOWN') return;
+    if (newDirection === 'DOWN' && direction === 'UP') return;
+    if (newDirection === 'LEFT' && direction === 'RIGHT') return;
+    if (newDirection === 'RIGHT' && direction === 'LEFT') return;
+
+    setDirection(newDirection);
+  };
+
   useEffect(() => {
     const handleKeyPress = (e) => {
       if (!isPlaying) return;
@@ -72,27 +85,20 @@ function App() {
         e.preventDefault();
       }
 
+      let newDirection = null;
       switch (e.key) {
-        case 'ArrowUp':
-          if (direction !== 'DOWN') setDirection('UP');
-          break;
-        case 'ArrowDown':
-          if (direction !== 'UP') setDirection('DOWN');
-          break;
-        case 'ArrowLeft':
-          if (direction !== 'RIGHT') setDirection('LEFT');
-          break;
-        case 'ArrowRight':
-          if (direction !== 'LEFT') setDirection('RIGHT');
-          break;
-        default:
-          break;
+        case 'ArrowUp': newDirection = 'UP'; break;
+        case 'ArrowDown': newDirection = 'DOWN'; break;
+        case 'ArrowLeft': newDirection = 'LEFT'; break;
+        case 'ArrowRight': newDirection = 'RIGHT'; break;
+        default: return; // Exit if not an arrow key
       }
+      handleDirectionChange(newDirection);
     };
 
     document.addEventListener('keydown', handleKeyPress);
     return () => document.removeEventListener('keydown', handleKeyPress);
-  }, [direction, isPlaying]);
+  }, [isPlaying, direction, handleDirectionChange]);
 
   useEffect(() => {
     let gameInterval;
@@ -141,6 +147,7 @@ function App() {
         onStart={startGame}
         onPause={pauseGame}
       />
+      <TouchControls onDirectionChange={handleDirectionChange} />
       <button className="about-button" onClick={toggleAboutModal}>About</button>
       <AboutModal isOpen={isAboutModalOpen} onClose={toggleAboutModal} />
     </div>
