@@ -1,7 +1,9 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import GameBoard from './components/GameBoard';
-import GameInfo from './components/GameInfo';
-import { checkCollision, generateFood, getInitialSnake } from './utils/gameUtils';
+import { useCallback, useEffect, useState } from 'react';
+import './App.css';
+import AboutModal from './components/AboutModal.jsx';
+import GameBoard from './components/GameBoard.jsx';
+import GameInfo from './components/GameInfo.jsx';
+import { checkCollision, generateFood, getInitialSnake } from './utils/gameUtils.js';
 
 const GRID_SIZE = 20;
 const CELL_SIZE = 20;
@@ -14,6 +16,7 @@ function App() {
   const [isPlaying, setIsPlaying] = useState(false);
   const [score, setScore] = useState(0);
   const [gameOver, setGameOver] = useState(false);
+  const [isAboutModalOpen, setIsAboutModalOpen] = useState(false);
 
   const moveSnake = useCallback(() => {
     if (!isPlaying || gameOver) return;
@@ -64,6 +67,11 @@ function App() {
     const handleKeyPress = (e) => {
       if (!isPlaying) return;
 
+      // Prevent default scroll behavior for arrow keys used in game
+      if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.key)) {
+        e.preventDefault();
+      }
+
       switch (e.key) {
         case 'ArrowUp':
           if (direction !== 'DOWN') setDirection('UP');
@@ -107,8 +115,19 @@ function App() {
     setIsPlaying(false);
   };
 
+  const toggleAboutModal = () => {
+    setIsAboutModalOpen(!isAboutModalOpen);
+    if (!isAboutModalOpen && isPlaying) {
+      setIsPlaying(false);
+    }
+  };
+
   return (
     <div className="game-container">
+      <header className="page-header">
+        <h1>Snake</h1>
+        <img src="/icons8-snake-94.png" alt="Snake Icon" />
+      </header>
       <GameBoard
         snake={snake}
         food={food}
@@ -122,8 +141,10 @@ function App() {
         onStart={startGame}
         onPause={pauseGame}
       />
+      <button className="about-button" onClick={toggleAboutModal}>About</button>
+      <AboutModal isOpen={isAboutModalOpen} onClose={toggleAboutModal} />
     </div>
   );
 }
 
-export default App;
+export default App; 
